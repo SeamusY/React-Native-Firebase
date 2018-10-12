@@ -1,0 +1,32 @@
+{
+  "name": "MeeOpp",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "start": "node node_modules/react-native/local-cli/cli.js start",
+    "test": "jest",
+    "android-linux": "react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle --assets-dest android/app/src/main/res"
+  },
+  "dependencies": {
+    "@babel/core": "^7.0.0-0",
+    "@types/react-redux": "^6.0.9",
+    "@types/redux": "^3.6.0",
+    "babel-core": "^7.0.0-0",
+    "firebase": "4.9.1",
+    "react": "16.5.0",
+    "react-devtools": "^3.4.0",
+    "react-native": "0.57.2",
+    "react-redux": "^5.0.7",
+    "redux-thunk": "^2.3.0"
+  },
+  "devDependencies": {
+    "@babel/plugin-proposal-class-properties": "^7.1.0",
+    "babel-jest": "23.6.0",
+    "jest": "23.6.0",
+    "metro-react-native-babel-preset": "^0.48.1",
+    "react-test-renderer": "16.5.0"
+  },
+  "jest": {
+    "preset": "react-native"
+  }
+}

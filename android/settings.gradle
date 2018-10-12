@@ -1,0 +1,3 @@
+rootProject.name = 'MeeOpp'
+
+include ':app'
