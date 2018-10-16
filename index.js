@@ -10,9 +10,10 @@ const store = configstore();
 
 const AppRedux = () => (
     <Provider store = {store}>
-    <App/>
+        <App/>
     </Provider>
 )
+
 AppRegistry.registerComponent(appName, () => AppRedux);
 
 

@@ -1,13 +1,9 @@
 import React, {Component} from 'react';
 import {Platform, StyleSheet, Text, View, TextInput, TouchableOpacity, Alert} from 'react-native';
 import { connect, dispatch } from 'react-redux';
-import { setUser } from './components/store/actions/user';
-const firebase = require('firebase');
+import { AddingToRedux, ReadFromFirebase } from './components/store/actions/action';
 
-const firebaseConfig = {
-  databaseURL: "https://react-native-391b9.firebaseio.com/",
-};
-const data = firebase.initializeApp(firebaseConfig);
+
 class App extends Component {
   constructor(){
     super();
@@ -21,32 +17,26 @@ class App extends Component {
     }
   }
   componentDidMount(){
-    var ref = data.database().ref("Item1");
-    ref.once("value").then((snapshot)=>{
-      this.setState({
-        FirstName: snapshot.child("FirstName").val(),
-        LastName: snapshot.child("LastName").val(),
-        CompanyName: snapshot.child("CompanyName").val(),
-        Department: snapshot.child("Department").val(),
-        Position: snapshot.child("Position").val(),
-        Email: snapshot.child("Email").val()
+    this.props.GetFirebase();
+    this.setState({
+      FirstName:this.props.reducer.user.FirstName,
+      LastName:this.props.reducer.user.LastName,
+      CompanyName:this.props.reducer.user.CompanyName,
+      Department:this.props.reducer.user.Department,
+      Position:this.props.reducer.user.Position,
+      Email:this.props.reducer.user.Email
     })
-  })
- }
+  }
   Save(){
-    var ref = data.database().ref("Item1");
-    ref.set({
-      'FirstName': this.state.FirstName,
-      'LastName': this.state.LastName,
-      'CompanyName': this.state.CompanyName,
-      'Department': this.state.Department,
-      'Position': this.state.Position,
-      'Email': this.state.Email
-      }).then(()=>{
-        Alert.alert("Successfully Pushed");
-      }).catch((err)=>Alert.alert(
-        "Error happened " + err
-      ));
+    var information = {
+        'FirstName': this.state.FirstName,
+        'LastName': this.state.LastName,
+        'CompanyName': this.state.CompanyName,
+        'Department': this.state.Department,
+        'Position': this.state.Position,
+        'Email': this.state.Email
+      }
+    this.props.setuser(information);
   }
   render() {
     return (
@@ -56,7 +46,7 @@ class App extends Component {
                 <Text>First Name</Text>
               </View>
               <View style={{flex:0.5}}>
-                <TextInput style={{textAlign:"right"}} onChangeText={(FirstName)=>this.setState({FirstName})} value={this.state.FirstName}></TextInput>
+                <TextInput style={{textAlign:"right"}} onChangeText={(FirstName)=>this.setState({FirstName})} value={this.state.FirstName} defaultValue={this.props.reducer.user.FirstName}></TextInput>
               </View>
         </View>
         <View style={{height: 40, flexDirection:"row", borderBottomWidth:1, borderBottomColor:"gray"}}>
@@ -64,7 +54,7 @@ class App extends Component {
                 <Text>Last Name</Text>
               </View>
               <View style={{flex:0.5}}>
-              <TextInput style={{textAlign:"right"}} onChangeText={(LastName)=>this.setState({LastName})} value={this.state.LastName}></TextInput>
+              <TextInput style={{textAlign:"right"}} onChangeText={(LastName)=>this.setState({LastName})} value={this.state.LastName}  defaultValue={this.props.reducer.user.LastName}></TextInput>
               </View>
         </View>
         <View style={styles.filler}/>
@@ -73,7 +63,7 @@ class App extends Component {
               <Text>Company</Text>
               </View>
               <View style={{flex:0.5}}>
-              <TextInput style={{textAlign:"right"}} onChangeText={(CompanyName)=>this.setState({CompanyName})} value={this.state.CompanyName}></TextInput>
+              <TextInput style={{textAlign:"right"}} onChangeText={(CompanyName)=>this.setState({CompanyName})} value={this.state.CompanyName} defaultValue={this.props.reducer.user.CompanyName}></TextInput>
               </View>      
         </View>
         <View style={{height: 40, flexDirection:"row", borderBottomWidth:1, borderBottomColor:"gray"}}>
@@ -81,7 +71,7 @@ class App extends Component {
               <Text>Department</Text>
                 </View>
               <View style={{flex:0.5}}>
-              <TextInput style={{textAlign:"right"}} onChangeText={(Department)=>this.setState({Department})} value={this.state.Department}></TextInput>
+              <TextInput style={{textAlign:"right"}} onChangeText={(Department)=>this.setState({Department})} value={this.state.Department} defaultValue={this.props.reducer.user.Department}></TextInput>
               </View>
         </View>
         <View style={{height: 40, flexDirection:"row", borderBottomWidth:1, borderBottomColor:"gray"}}>
@@ -89,7 +79,7 @@ class App extends Component {
                 <Text>Position</Text>
               </View>
               <View style={{flex:0.5}}>
-              <TextInput style={{textAlign:"right"}} onChangeText={(Position)=>this.setState({Position})} value={this.state.Position}></TextInput>
+              <TextInput style={{textAlign:"right"}} onChangeText={(Position)=>this.setState({Position})} value={this.state.Position} defaultValue={this.props.reducer.user.Position}></TextInput>
               </View>
         </View>
         <View style={{height: 10, flexDirection:"row", backgroundColor: 'lightgray'}}/>
@@ -98,7 +88,7 @@ class App extends Component {
                 <Text>Email</Text>
               </View>
               <View style={{flex:0.5}}>
-                <TextInput style={{textAlign:"right"}} onChangeText={(Email) =>this.setState({Email})} value={this.state.Email}/>
+                <TextInput style={{textAlign:"right"}} onChangeText={(Email) =>this.setState({Email})} value={this.state.Email} defaultValue={this.props.reducer.user.Email}/>
               </View>
         </View>
         <View style={styles.filler}/>
@@ -146,7 +136,13 @@ const styles = StyleSheet.create({
     fontSize:20,
   }
 });
-function mapDispatchToProps(dispatch){
-  return {setuser: dispatch}
-}
-export default connect(null,mapDispatchToProps(this.state))(App);
+const mapDispatchToProps = dispatch =>({
+  setuser: (data) => dispatch(AddingToRedux(data)),
+  GetFirebase: () => dispatch(ReadFromFirebase())
+})
+
+const mapStateToProps = ({reducer})=>({
+  reducer
+})
+
+export default connect(mapStateToProps,mapDispatchToProps)(App);

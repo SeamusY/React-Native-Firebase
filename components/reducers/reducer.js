@@ -8,7 +8,10 @@ const reducer = (state = initialState, action) => {
     switch (action.type) {
         case setuser:
             return {
-                user: state.user
+                user:{
+                    ...state.user,
+                    ...action.user
+                }
             }
         default:
             return state
